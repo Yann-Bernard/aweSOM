@@ -15,6 +15,9 @@ pip3 install numpy scipy pillow dahuffman [--user if you don't have root]
 # Status
 
 Data : Cleaned & Refactored
-Models : Work in progress
+
+Models : Cleaned & Refactored
+
 CMD : Work in progress
+
 GUI : Not yet functional

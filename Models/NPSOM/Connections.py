@@ -1,5 +1,5 @@
-from Models.Connections_Models import *
-from Models.Parameters import *
+from Models.NPSOM.Connections_Models import *
+from Parameters import *
 
 
 def kohonen():

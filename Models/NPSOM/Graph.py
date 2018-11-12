@@ -1,4 +1,4 @@
-from Models.Parameters import *
+from Parameters import *
 import numpy as np
 import copy
 from heapq import *

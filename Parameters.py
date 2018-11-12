@@ -1,4 +1,4 @@
-import numpy as np
+from Models.NPSOM.Common_Functions import *
 np.set_printoptions(threshold=np.inf)  # Used to print the data completely
 
 # Image
@@ -14,13 +14,13 @@ epsilon_start = 0.6
 epsilon_end = 0.05
 sigma_start = 0.5
 sigma_end = 0.001
+distance = dist_quad
+neighbourhood_function = normalized_gaussian
 
 # PSOM variant
-psom = False
 omega = 3*10**(-7)
 
 # Star center change
-dsom = False
 switch_threshold = 1.5
 range_threshold = (0.5, 5)
 
@@ -33,11 +33,13 @@ epsilon_b = 0.4
 epsilon_n = 0.2
 
 # PC SOM
+pcsom_decreasing_param = True
 alpha_start = 0.1
 alpha_end = 0.05
 eta_start = 0.01
 eta_end = 0.001
-
+alpha = 0.1
+eta = 0.01
 
 # Genetic Optimisation
 range_epoch_nbr = (50, 50)

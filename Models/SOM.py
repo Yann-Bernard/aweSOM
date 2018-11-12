@@ -1,22 +1,10 @@
-from Models.Graph import *
+from Models.NPSOM.Graph import *
+from Models.NPSOM.Common_Functions import *
 import copy
 
+# Classical Variant of the SOM.
+# With linearly decreasing parameters.
 
-def dist_quad(x, y):
-    assert np.array_equal(np.array(x.shape), np.array(y.shape))
-    return np.sum((x - y) ** 2)
-
-
-def manhattan_dist(x, y):
-    return np.sum(np.abs(x - y))
-
-
-def gauss(d, sig):
-    return np.exp(-((d / sig) ** 2) / 2) / sig
-
-
-def normalized_gaussian(d, sig):
-    return np.exp(-((d / sig) ** 2) / 2)
 
 class Neurone:
     def __init__(self, x, y, shape, min, max, connections):
@@ -125,26 +113,24 @@ class SOM:
                 dist[x, y] = distance(self.nodes[x, y].weight, vector)
         return np.unravel_index(np.argmin(dist, axis=None), dist.shape)  # Returning the Best Matching Unit's index.
 
-    def winners(self):
-        datacomp = np.zeros(len(self.data), dtype=int)  # datacomp est la liste du numero du neurone vainqueur pour l'imagette correspondante
+    def get_all_winners(self):
+        winners_list = np.zeros(len(self.data), dtype=int)  # list of BMU for each corresponding training vector
         for i in range(len(self.data)):
             bmu = self.winner(self.data[i])
-            datacomp[i] = bmu[1]*neuron_nbr+bmu[0]
-        return datacomp
+            winners_list[i] = bmu[1]*neuron_nbr+bmu[0]
+        return winners_list
 
     def train(self, iteration, epoch_time, vector_coordinates, f=normalized_gaussian, distance=dist_quad):
         if iteration % epoch_time == 0:
             self.epsilon += self.epsilon_stepping
             self.sigma += self.sigma_stepping
-            if psom and iteration > 0:
-                self.pruning_neighbors()
             self.refresh_distance_vector = True
+
         if self.refresh_distance_vector:
             for i in range(len(self.distance_vector)):
                 self.distance_vector[i] = f(i/(len(self.distance_vector)-1), self.sigma)
             if log_gaussian_vector:
                 print(self.distance_vector)
-
 
         vector = self.data[vector_coordinates]
 
@@ -161,23 +147,6 @@ class SOM:
                 dist = self.neural_dist[bmu[1]*neuron_nbr+bmu[0], y*neuron_nbr+x]
                 if dist >= 0:  # exploiting here the numpy bug so that negative value equals no connections
                     self.nodes[x, y].weight += self.epsilon*self.distance_vector[dist]*(vector-self.nodes[x, y].weight)
-
-    def pruning_neighbors(self):
-        for x in range(neuron_nbr-1):
-            for y in range(neuron_nbr-1):
-                self.pruning_check(x, y, x+1, y)
-                self.pruning_check(x, y, x, y+1)
-        self.compute_neurons_distance()
-
-    def pruning_check(self, x1, y1, x2, y2):
-        one = y1*neuron_nbr + x1
-        two = y2*neuron_nbr + x2
-        if self.neural_adjacency_matrix[one, two] != 0 and self.neural_adjacency_matrix[one, two] != np.inf:
-            diff = manhattan_dist(self.nodes[x1, y1].weight, self.nodes[x2, y2].weight)
-            probability = np.exp(-1/omega * 1/(diff * self.nodes[x1, y1].t * self.nodes[x2, y2].t))
-            if np.random.rand() < probability:
-                print("Removed (", x1, ",", y1, ") - (", x2, ",", y2, ") probability : ", probability)
-                self.remove_edges((x1, y1), (x2, y2))
 
     def remove_edges(self, v1, v2):  # remove_edges((x, y), (x2, y2))
         inp = "n"+str(v1[0])+','+str(v1[1])

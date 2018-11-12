@@ -1,8 +1,6 @@
 # Defining here the common local matrices that are used in the NP-SOM model
-#
-#
-#
-#
+# The labels horizontally and vertically starting from the top left corner are
+# NEWSn (North, East, West, South, neuron)
 
 kohonen_matrix = [[0, 0, 0, 0, 1],
                   [0, 0, 0, 0, 1],
