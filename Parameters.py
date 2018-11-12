@@ -1,10 +1,11 @@
 import numpy as np
 np.set_printoptions(threshold=np.inf)  # Used to print the data completely
 
-# Images
+# Image
 pictures_dim = (3, 3)
-output_path = "./results/dynamic/"
-input_path = "./image/limited_test/"
+input_path = "./images/additional_samples/"
+image_name = "audrey.png"  # Set as empty string in order to select the whole folder
+output_path = "./results/"
 
 # SOM variables
 neuron_nbr = 6
@@ -55,6 +56,7 @@ nb_generations = 50
 elite_proportion = 0.4
 
 # Logs
+log_data_load = True
 log_graphs = False
 log_gaussian_vector = False
 log_execution = False

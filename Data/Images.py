@@ -1,20 +1,16 @@
 from PIL import Image
-from Models.SOM import *
-from Models.Parameters import *
 from dahuffman import HuffmanCodec
+from Parameters import *
 import os
 
-# Choosing the number n of neurons or the side c of the prototypes. Si is the size of the initial image, h is the height of the image, w is the width, Cr is the compression ratio.
-# n = (Si*Cr - 32*c²/(h*w))/8c²
-# c² = Si*Cr/(8n+32/(h*w))
 
-class Dataset:
-    def __init__(self, path):
+class ImageData:
+    def __init__(self, path=input_path+image_name):
         self.nb_pictures = None
         self.data = None
-        self.load_image(path)
+        self.load(path)
 
-    def load_image(self, path):
+    def load(self, path):
         self.data = []
         im = Image.open(path)
         size = np.flip(im.size, 0)  # For some strange reason the data isn't ordered in the same way as the size says
@@ -31,19 +27,17 @@ class Dataset:
                 self.data.append(picture.flatten())
         self.data = np.array(self.data)/255
 
-        print("\n" + path)
-        print("Pictures number :", self.nb_pictures)
-        if size[0] / pictures_dim[0] != self.nb_pictures[0] or size[0] / pictures_dim[0] != self.nb_pictures[0]:
-            print("\tWarning - image size is not divisible by pictures dimensions, the result will be cropped")
+        if log_data_load:
+            print("\n" + path)
+            print("Pictures number :", self.nb_pictures)
+            if size[0] / pictures_dim[0] != self.nb_pictures[0] or size[0] / pictures_dim[0] != self.nb_pictures[0]:
+                print("\tWarning - image size is not divisible by pictures dimensions, the result will be cropped")
 
-    def compute_result(self, som):
+    def compress(self, som):
         som_map = som.get_som_as_map()
         pixels = []
-        winners = []
         for i in range(len(self.data)):
             w = som.winner(self.data[i])
-            if w not in winners:
-                winners.append(w)
             pixels.append(som_map[w])
         px2 = []
         lst2 = ()
@@ -58,62 +52,17 @@ class Dataset:
         px *= 255
         px = np.array(px, 'uint8')
         file = Image.fromarray(px)
-
-        # n = neuron_nbr*neuron_nbr
-        # print("Used neurons :", len(winners), "/", n, "(", len(winners)/n*100, "%)")
-
         return file
 
-    def compression(self, som, name):
-        file = self.compute_result(som)
-        #file.show()
-        file.save(output_path+name)
-
-    def save_compressed(self, som, name):
-        # winners = np.zeros((neuron_nbr, neuron_nbr))
-        # for i in range(len(self.data)):
-        #     w = som.winner(self.data[i]/255)
-        #     winners[w] += 1
-        winners = som.winners()
-        file = open(output_path+name, "w")
-        # file.write(str(som.get_som_as_list()))
-        # res = ""
-        # str_win = ""
-        diff = Dataset.differential_coding(winners.flatten(), self.nb_pictures[1])
-
-        # for i in range(len(self.data)):
-        #     res += str(diff[i])+" "
-        #     str_win += str(winners[i])+" "
-
-        # # Codebook compression
-        # codebook = som.get_som_as_list()
-        # str_codebook = ""
-        # for i in codebook:
-        #     for j in range(len(i)):
-        #         str_codebook += str(j)+" "
-        #     str_codebook += "\n"
-
-        codeNormal = HuffmanCodec.from_data(winners).encode(winners)
-        codeDiff = HuffmanCodec.from_data(diff).encode(diff)
-        hd = np.concatenate(som.get_som_as_list(), 0) * 255
-        hd = np.array(hd, 'uint8')
-        header = HuffmanCodec.from_data(hd).encode(hd)
-        file.write(str(header))
-        file.write(str(codeDiff))
-        file.close()
-
-        print("Taux de compression du codage différentiel :", len(codeNormal)/len(codeDiff))
-        print("Taux de compression total :", len(self.data)*len(self.data[0])/(len(header)+len(codeDiff)))
-
     @staticmethod
-    def compute_compression_ratio(data, som, winners, width):
-        diff = Dataset.differential_coding(winners.flatten(), width)
-        codeNormal = HuffmanCodec.from_data(winners).encode(winners)
-        codeDiff = HuffmanCodec.from_data(diff).encode(diff)
+    def compute_compression_metrics(data, som, winners, width):
+        diff = ImageData.differential_coding(winners.flatten(), width)
+        normal_code = HuffmanCodec.from_data(winners).encode(winners)
+        differential_code = HuffmanCodec.from_data(diff).encode(diff)
         hd = np.concatenate(som.get_som_as_list(), 0) * 255
         hd = np.array(hd, 'uint8')
         header = HuffmanCodec.from_data(hd).encode(hd)
-        return len(codeNormal)/len(codeDiff), len(data)*len(data[0])/(len(header)+len(codeDiff))
+        return len(normal_code)/len(differential_code), len(data)*len(data[0])/(len(header)+len(differential_code))
 
     @staticmethod
     def differential_coding(winners, width):
@@ -184,6 +133,6 @@ def load_image_folder(path):
     files = os.listdir(path)
     data = []
     for f in files:
-        data.extend(Dataset(path + f).data)
+        data.extend(ImageData(path + f).data)
     return data
 
