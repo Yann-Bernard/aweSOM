@@ -1,4 +1,4 @@
-from CMD.Model import *
+from CMD.Single_Run import *
 import multiprocessing as mp
 from Models.DynamicSOM import *
 

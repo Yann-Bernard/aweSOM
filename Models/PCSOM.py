@@ -37,7 +37,7 @@ class PCSOM(PruningSOM):
         # Getting the Best matching unit
         bmu = self.winner(vector, distance)
         self.nodes[bmu].t = 1
-        self.PC_updating_weights(bmu, vector,distance)
+        self.updating_weights(bmu, vector)
         return bmu[0], bmu[1]
 
     def updating_weights(self, bmu, vector):

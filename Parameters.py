@@ -3,13 +3,13 @@ np.set_printoptions(threshold=np.inf)  # Used to print the data completely
 
 # Image
 pictures_dim = (3, 3)
-input_path = "./images/additional_samples/"
+input_path = "./Data/images/additional_samples/"
 image_name = "audrey.png"  # Set as empty string in order to select the whole folder
 output_path = "./results/"
 
 # SOM variables
-neuron_nbr = 6
-epoch_nbr = 20
+neuron_nbr = 9
+epoch_nbr = 50
 epsilon_start = 0.6
 epsilon_end = 0.05
 sigma_start = 0.5
@@ -61,4 +61,4 @@ elite_proportion = 0.4
 log_data_load = True
 log_graphs = False
 log_gaussian_vector = False
-log_execution = False
+log_execution = True

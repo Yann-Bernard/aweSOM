@@ -1,4 +1,4 @@
-from CMD.Model import *
+from CMD.Single_Run import *
 from Models.DynamicSOM import *
 import itertools
 import multiprocessing as mp
@@ -179,7 +179,7 @@ class ConnexionGenome:
 
 class Population:
     def __init__(self):
-        img = Dataset("./image/limited_test/peppers.pgm")
+        img = Dataset("./images/limited_test/peppers.pgm")
         self.data = img.data
         self.current = []
         for i in range(nb_individuals):
