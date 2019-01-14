@@ -1,9 +1,9 @@
 from tkinter import *
 from tkinter.ttk import *
-from Data.Simple_Data_Sample import *
-from Models.Connections import *
+from Data.Generated_2D import *
+from Models.NPSOM.Connections import *
+from Models.DynamicPCSOM import *
 from Models.PCSOM import *
-from Models.Original_PCSOM import *
 
 import colorsys
 import time
@@ -36,7 +36,7 @@ class GraphicalSOM:
         self.connexion = Canvas(self.window, width=connexions_size, height=connexions_size, bg="ivory")
         self.connexion.grid(row=6, column=10, columnspan=1, rowspan=1, padx=10, pady=10)
         np.random.seed(0)
-        self.SOM = PCSOM(sierpinski_carpet(dataset_size, 1), star())
+        self.SOM = DynamicSOM(sierpinski_carpet(dataset_size, 1), star())
         self.epoch_time = len(self.SOM.data)
         self.current_iteration = 0
         self.total_iterations = self.epoch_time * epoch_nbr
@@ -136,7 +136,7 @@ class GraphicalSOM:
         self.epoch_str.set("Epochs number : "+str(self.current_iteration//self.epoch_time))
         self.neurons_str.set("Neurons number : "+str(neuron_nbr*neuron_nbr))
         self.dataset_str.set("Dataset size : "+str(dataset_size))
-        winners = self.SOM.winners()
+        winners = self.SOM.get_all_winners()
         self.mean_error_str.set("Mean error : "+str(self.SOM.compute_mean_error(winners)))
         self.psnr_str.set("PSNR : "+str(self.SOM.peak_signal_to_noise_ratio(winners)))
 
@@ -233,5 +233,3 @@ class GraphicalSOM:
                 self.connexion.update()
                 start_time = time.time()
 
-
-GraphicalSOM()

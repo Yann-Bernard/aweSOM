@@ -14,7 +14,7 @@ class GraphicalSOM:
         self.canvas.grid(row=0, column=0, columnspan=10, rowspan=10, padx=10, pady=10)
 
         np.random.seed(0)
-        self.img = Dataset("./image/limited_test/peppers.pgm")
+        self.img = ImageData("./images/limited_test/peppers.pgm")
         data = self.img.data
 
         self.SOM = SOM(data, kohonen())
@@ -34,7 +34,7 @@ class GraphicalSOM:
         self.window.mainloop()
 
     def draw_result(self):
-        self.im = self.img.compute_result(self.SOM)
+        self.im = self.img.compress(self.SOM)
         self.im = self.im.resize((width, height))
         self.ph = itk.PhotoImage(self.im)
         self.canvas.create_image(0, 0, image=self.ph, anchor=NW)
@@ -80,7 +80,7 @@ class GraphicalSOM:
         self.epoch_str.set("Epochs number : "+str(self.current_iteration//self.epoch_time))
         self.neurons_str.set("Neurons number : "+str(neuron_nbr*neuron_nbr))
         self.dataset_str.set("Dataset size : "+str(len(self.SOM.data)))
-        winners = self.SOM.winners()
+        winners = self.SOM.get_all_winners()
         self.mean_error_str.set("Mean error : "+str(self.SOM.compute_mean_error(winners)))
         self.psnr_str.set("PSNR : "+str(self.SOM.peak_signal_to_noise_ratio(winners)))
 
@@ -121,6 +121,3 @@ class GraphicalSOM:
                 self.canvas.delete("all")
                 self.refresh()
                 start_time = time.time()
-
-
-GraphicalSOM()

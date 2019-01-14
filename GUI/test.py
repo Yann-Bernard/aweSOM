@@ -1,7 +1,7 @@
 from Models.SOM import *
 from tkinter import *
 from Data.Simple_Data_Sample import *
-from Models.Connections import *
+from Models.NPSOM.Connections import *
 
 h_l = 700
 w_l = 700

@@ -1,4 +1,4 @@
-from CMD.Model import *
+from CMD.Single_Run import *
 from tkinter import *
 from PIL import ImageTk as itk
 
