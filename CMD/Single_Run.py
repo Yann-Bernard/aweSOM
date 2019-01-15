@@ -135,4 +135,6 @@ def run_from_som():
     im2 = display_som(carte.get_som_as_list())
     im2.save(output_path + "som_500epoch.png")
 
-run()
+
+if __name__ == '__main__':
+    run()

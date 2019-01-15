@@ -1,12 +1,19 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QGroupBox, QVBoxLayout
+from PyQt5.QtWidgets import QGroupBox, QVBoxLayout, QMdiSubWindow, QTextEdit, QLayout
 
 
-class Module(QGroupBox):
+class Module(QMdiSubWindow):
     def __init__(self, main_window, name):
-        super().__init__(main_window)
+        super().__init__()
         self.title = name
-        self.setTitle(name)
-        self.setAlignment(Qt.AlignHCenter)
+        self.setWindowTitle(name)
+
+        self.module = QGroupBox()
         self.layout = QVBoxLayout()
-        self.setLayout(self.layout)
+        self.module.setLayout(self.layout)
+        self.setWidget(self.module)
+
+        main_window.add_tile(self)
+        self.show()
+        main_window.tile()
+
