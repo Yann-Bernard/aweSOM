@@ -202,3 +202,4 @@ class SOM:
         for x in range(neuron_nbr):
             for y in range(neuron_nbr):
                 self.nodes[x, y].weight = list[y*neuron_nbr + x]
+

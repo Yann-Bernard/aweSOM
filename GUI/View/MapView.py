@@ -5,9 +5,9 @@ from GUI.View.Module import Module
 from Parameters import input_path, image_name
 
 
-class ReconstructedImage(Module):
+class MapView(Module):
     def __init__(self, main_window):
-        super().__init__(main_window, "Reconstructed Image")
+        super().__init__(main_window, "Map View")
         self.img = QLabel(self)
         pixmap = QPixmap(input_path+image_name)
         pixmap = pixmap.scaled(480, 270)
