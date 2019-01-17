@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import QApplication
 from Data.ColoredImage import ColoredImage
 from Data.Images import ImageData
 from CMD.Single_Run import display_som
+from GUI.View.DistanceMap import DistanceMap
 from GUI.View.Image import Image
 from GUI.View.MainWindow import MainWindow
 from GUI.View.MapView import MapView
@@ -37,14 +38,24 @@ def run():
         vect = som.unique_random_vector()
         som.train(i, epoch_time, vect)
 
-    tile2.set_image(ImageQt(img.compress(som)))
-    tile3.set_image(ImageQt(img.display_som(som.get_som_as_list())))
+    reconstructed_image = img.compress(som)
+    tile2.set_image(ImageQt(reconstructed_image))
+    reconstructed_image.save(output_path + "koh_"+str(neuron_nbr) + "n_" + str(pictures_dim[0])+"x"+str(pictures_dim[1])+"_"+str(epoch_nbr)+"epoch_image.png")
+
+    som_as_image = img.display_som(som.get_som_as_list())
+    tile3.set_image(ImageQt(som_as_image))
+    som_as_image.save(output_path + "koh_"+str(neuron_nbr) + "n_" + str(pictures_dim[0])+"x"+str(pictures_dim[1])+"_"+str(epoch_nbr)+"epoch_map.png")
+    print("Finished")
+
+
+def track():
+    derp = 1
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     window = MainWindow("Tracking")
-    # tile4 = Difference(window)
+    tile4 = DistanceMap(window)
     tile3 = MapView(window)
     tile2 = ReconstructedImage(window)
     tile1 = Image(window)
