@@ -3,13 +3,14 @@ import threading
 import numpy as np
 import sys
 
+from PIL import ImageChops
 from PIL.ImageQt import ImageQt
 from PyQt5.QtWidgets import QApplication
 
 from Data.ColoredImage import ColoredImage
 from Data.Images import ImageData
 from CMD.Single_Run import display_som
-from GUI.View.DistanceMap import DistanceMap
+from GUI.View.DistanceMapView import DistanceMapView
 from GUI.View.Image import Image
 from GUI.View.MainWindow import MainWindow
 from GUI.View.MapView import MapView
@@ -46,16 +47,24 @@ def run():
     tile3.set_image(ImageQt(som_as_image))
     som_as_image.save(output_path + "koh_"+str(neuron_nbr) + "n_" + str(pictures_dim[0])+"x"+str(pictures_dim[1])+"_"+str(epoch_nbr)+"epoch_map.png")
     print("Finished")
+    track(som)
 
 
-def track():
-    derp = 1
-
+def track(som):
+    max = 101
+    for i in range(2, max):
+        path = "./Data/images/tracking/sailboat00"+"{0:0=3d}".format(i)+".png"
+        current = ColoredImage(path)
+        img_compressed = current.compress(som)
+        out = ImageChops.difference(current.im, img_compressed)
+        out = out.convert("L")
+        tile1.set_image(ImageQt(current.im))
+        tile4.set_image(ImageQt(out))
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     window = MainWindow("Tracking")
-    tile4 = DistanceMap(window)
+    tile4 = DistanceMapView(window)
     tile3 = MapView(window)
     tile2 = ReconstructedImage(window)
     tile1 = Image(window)

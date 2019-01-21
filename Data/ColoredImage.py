@@ -6,17 +6,19 @@ import os
 
 class ColoredImage:
     def __init__(self, path=input_path+image_name):
+        self.im = None
         self.nb_pictures = None
         self.real_picture_dim = None
         self.data = None
+        print(path)
         self.load(path)
 
     def load(self, path):
         self.data = []
-        im = Image.open(path)
-        size = np.flip(im.size, 0)  # For some strange reason the data isn't ordered in the same way as the size says
+        self.im = Image.open(path)
+        size = np.flip(self.im.size, 0)  # For some strange reason the data isn't ordered in the same way as the size says
         size[1] = size[1]*3
-        px = np.array(im.getdata(), 'uint8')
+        px = np.array(self.im.getdata(), 'uint8')
         print(size)
         px = px.reshape(size)
         self.real_picture_dim = [pictures_dim[0], pictures_dim[1]*3]

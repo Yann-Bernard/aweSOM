@@ -1,14 +1,13 @@
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QImage
 from PyQt5.QtWidgets import QLabel
-from PyQt5.uic.properties import QtCore
 
 from GUI.View.Module import Module
 from Parameters import input_path, image_name
 
 
-class Image(Module):
+class DistanceMapView(Module):
     def __init__(self, main_window):
-        super().__init__(main_window, "Input Image")
+        super().__init__(main_window, "Distance Map")
         self.img = QLabel(self)
         pixmap = QPixmap(input_path+image_name)
         pixmap = pixmap.scaled(480, 270)
@@ -19,3 +18,4 @@ class Image(Module):
         pixmap = QPixmap.fromImage(imgQt)
         pixmap = pixmap.scaled(480, 270)
         self.img.setPixmap(pixmap)
+
