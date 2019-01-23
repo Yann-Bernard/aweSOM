@@ -18,4 +18,3 @@ class DistanceMapView(Module):
         pixmap = QPixmap.fromImage(imgQt)
         pixmap = pixmap.scaled(480, 270)
         self.img.setPixmap(pixmap)
-

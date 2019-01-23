@@ -16,7 +16,7 @@ from GUI.View.MainWindow import MainWindow
 from GUI.View.MapView import MapView
 from GUI.View.Module import Module
 from GUI.View.ReconstructedImage import ReconstructedImage
-from Models.NPSOM.Connections import kohonen
+from Models.NPSOM.Connections import kohonen, star
 from Models.SOM import SOM
 from Parameters import *
 
@@ -27,7 +27,7 @@ def run():
     data = img.data
     epoch_time = len(data)
     nb_iter = epoch_time * epoch_nbr
-    som = SOM(data, kohonen())
+    som = SOM(data, star())
 
     for i in range(nb_iter):
         # The training vector is chosen randomly
@@ -47,12 +47,13 @@ def run():
     tile3.set_image(ImageQt(som_as_image))
     som_as_image.save(output_path + "koh_"+str(neuron_nbr) + "n_" + str(pictures_dim[0])+"x"+str(pictures_dim[1])+"_"+str(epoch_nbr)+"epoch_map.png")
     print("Finished")
+    input("press enter to start tracking")
     track(som)
 
 
 def track(som):
     max = 101
-    for i in range(2, max):
+    for i in range(20, max):
         path = "./Data/images/tracking/sailboat00"+"{0:0=3d}".format(i)+".png"
         current = ColoredImage(path)
         img_compressed = current.compress(som)
@@ -60,6 +61,7 @@ def track(som):
         out = out.convert("L")
         tile1.set_image(ImageQt(current.im))
         tile4.set_image(ImageQt(out))
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
