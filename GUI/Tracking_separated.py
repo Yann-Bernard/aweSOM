@@ -21,8 +21,8 @@ from Models.SOM import SOM
 from Parameters import *
 
 
-def run_fusioned():
-    img = ColoredImage()
+def run(channel=None):
+    img = ColoredImage(channel=channel)
     np.random.seed(1024)
     data = img.data
     epoch_time = len(data)
@@ -33,8 +33,13 @@ def run_fusioned():
         # The training vector is chosen randomly
         if i % epoch_time == 0:
             som.generate_random_list()
-            tile2.set_image(ImageQt(img.compress(som)))
-            tile3.set_image(ImageQt(img.display_som(som.get_som_as_list())))
+            if channel == 0:
+                tile4.set_image(ImageQt(img.compress_channel(som,0)))
+            elif channel == 1:
+                tile5.set_image(ImageQt(img.compress_channel(som,1)))
+            elif channel == 2:
+                tile6.set_image(ImageQt(img.compress_channel(som,2)))
+            #tile3.set_image(ImageQt(img.display_som_channel(som.get_som_as_list())))
             print("Epoch : ", (i+1) // epoch_time, "/", epoch_nbr)
         vect = som.unique_random_vector()
         som.train(i, epoch_time, vect)
@@ -66,12 +71,17 @@ def track(som):
             img_compressed.save(output_path+"comp.png")
             out.save(output_path+"out.png")
 
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     window = MainWindow("Tracking")
-    tile4 = DistanceMapView(window)
-    tile3 = MapView(window)
+    tile6 = MapView(window)
+    tile5 = MapView(window)
+    tile4 = MapView(window)
+    tile3 = DistanceMapView(window)
     tile2 = ReconstructedImage(window)
     tile1 = Image(window)
-    threading.Thread(target=run, name="run").start()
+    threading.Thread(target=run, name="red", args=(0,)).start()
+    threading.Thread(target=run, name="green", args=(1,)).start()
+    threading.Thread(target=run, name="blue", args=(2,)).start()
     sys.exit(app.exec_())
