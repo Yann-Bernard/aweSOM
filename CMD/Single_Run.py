@@ -95,7 +95,7 @@ def run():
     epoch_time = len(data)
     nb_iter = epoch_time * epoch_nbr
 
-    som = PCSOM(data, kohonen())
+    som = DynamicSOM(data, star())
 
     for i in range(nb_iter):
         # The training vector is chosen randomly

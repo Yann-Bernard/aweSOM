@@ -3,6 +3,7 @@ import threading
 import numpy as np
 import sys
 
+import PIL as PIL
 from PIL import ImageChops
 from PIL.ImageQt import ImageQt
 from PyQt5.QtWidgets import QApplication
@@ -10,6 +11,8 @@ from PyQt5.QtWidgets import QApplication
 from Data.ColoredImage import ColoredImage
 from Data.Images import ImageData
 from CMD.Single_Run import display_som
+from GUI.DNF import DNF
+from GUI.View.DNFView import DNFView
 from GUI.View.DistanceMapView import DistanceMapView
 from GUI.View.Image import Image
 from GUI.View.MainWindow import MainWindow
@@ -46,28 +49,42 @@ def run():
     tile3.set_image(ImageQt(som_as_image))
     som_as_image.save(output_path + "koh_"+str(neuron_nbr) + "n_" + str(pictures_dim[0])+"x"+str(pictures_dim[1])+"_"+str(epoch_nbr)+"epoch_map.png")
     print("Finished")
-    input("press enter to start tracking")
+    # input("press enter to start tracking")
     track(som)
 
 
 def track(som):
-    max = 101
-    for i in range(42, max):
-        path = "./Data/images/tracking/sailboat00"+"{0:0=3d}".format(i)+".png"
-        current = ColoredImage(path)
-        img_compressed = current.compress(som)
-        out = ImageChops.difference(current.im, img_compressed)
-        out = out.convert("L")
-        tile1.set_image(ImageQt(current.im))
-        tile2.set_image(ImageQt(img_compressed))
-        tile4.set_image(ImageQt(out))
-        if i == 45:
-            img_compressed.save(output_path+"comp.png")
-            out.save(output_path+"out.png")
+    path = "./Data/images/test_tracking/new.png"
+    current = ColoredImage(path)
+    img_compressed = current.compress(som)
+    out = ImageChops.difference(current.im, img_compressed)
+    out = out.convert("L")
+    tile1.set_image(ImageQt(current.im))
+    tile2.set_image(ImageQt(img_compressed))
+    tile4.set_image(ImageQt(out))
+    img_compressed.save(output_path + "comp.png")
+    out.save(output_path + "out.png")
+    dnf_update(out)
+
+def dnf_update(saliency):
+    inp = np.array(np.asarray(saliency))
+    dnf = DNF(np.size(inp,0), np.size(inp,1))
+    inp = np.divide(inp, np.max(inp))
+    dnf.input = inp
+    dnf_out = None
+    for i in range(25):
+        dnf.update_map()
+        px = dnf.potentials*255
+        px = np.array(px, 'uint8')
+        dnf_out = PIL.Image.fromarray(px)
+        tile5.set_image(ImageQt(dnf_out))
+    dnf_out.save(output_path + "dnf_out.png")
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     window = MainWindow("Tracking")
+    tile5 = DNFView(window)
     tile4 = DistanceMapView(window)
     tile3 = MapView(window)
     tile2 = ReconstructedImage(window)

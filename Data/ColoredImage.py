@@ -13,6 +13,8 @@ class ColoredImage:
         print(path)
         if channel is not None:
             self.load_single_channel(path, channel)
+        else:
+            self.load(path)
 
     def load(self, path):
         self.data = []

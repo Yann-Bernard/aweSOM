@@ -2,13 +2,13 @@ from Models.NPSOM.Common_Functions import *
 np.set_printoptions(threshold=np.inf)  # Used to print the data completely
 
 # Image
-pictures_dim = (15, 15)
-input_path = "./Data/images/tracking/"
-image_name = "sailboat00001.png"  # Set as empty string in order to select the whole folder
+pictures_dim = (10, 10)
+input_path = "./Data/images/test_tracking/"
+image_name = "base.png"  # Set as empty string in order to select the whole folder
 output_path = "./results/tracking/"
 
 # SOM variables
-neuron_nbr = 10
+neuron_nbr = 4
 epoch_nbr = 6
 epsilon_start = 0.6
 epsilon_end = 0.05
