@@ -3,13 +3,13 @@ np.set_printoptions(threshold=np.inf)  # Used to print the data completely
 
 # Image
 pictures_dim = (10, 10)
-input_path = "./Data/images/test_tracking/"
-image_name = "base.png"  # Set as empty string in order to select the whole folder
-output_path = "./results/tracking/"
+input_path = "./Data/images/tracking/ducks/"
+image_name = "ducks00001.png"  # Set as empty string in order to select the whole folder
+output_path = "./results/tracking/ducks/"
 
 # SOM variables
-neuron_nbr = 4
-epoch_nbr = 6
+neuron_nbr = 40
+epoch_nbr = 10
 epsilon_start = 0.6
 epsilon_end = 0.05
 sigma_start = 0.5
