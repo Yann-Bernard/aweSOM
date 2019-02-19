@@ -8,8 +8,8 @@ image_name = "ducks00001.png"  # Set as empty string in order to select the whol
 output_path = "./results/tracking/ducks/"
 
 # SOM variables
-neuron_nbr = 40
-epoch_nbr = 10
+neuron_nbr = 10
+epoch_nbr = 6
 epsilon_start = 0.6
 epsilon_end = 0.05
 sigma_start = 0.5
