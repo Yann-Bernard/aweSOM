@@ -12,11 +12,11 @@ def manhattan_dist(x, y):
 
 def gauss(d, sig):
     return np.exp(-((d / sig) ** 2) / 2) / sig
-
+    # 0 1/sig
 
 def normalized_gaussian(d, sig):
     return np.exp(-((d / sig) ** 2) / 2)
-
+    # 0 et 1
 
 def euclidean_norm(x, y):
     assert np.array_equal(np.array(x.shape), np.array(y.shape))

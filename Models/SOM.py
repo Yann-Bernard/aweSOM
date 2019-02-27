@@ -1,5 +1,6 @@
 from Models.NPSOM.Graph import *
 from Models.NPSOM.Common_Functions import *
+import networkx as nx
 import copy
 
 # Classical Variant of the SOM.
@@ -202,4 +203,23 @@ class SOM:
         for x in range(neuron_nbr):
             for y in range(neuron_nbr):
                 self.nodes[x, y].weight = list[y*neuron_nbr + x]
+
+    def getDistanceGraph(self):
+        g = nx.complete_graph(len(self.data)+neuron_nbr*neuron_nbr)
+        nb_nodes = nx.number_of_nodes(g)
+        for i in range(nb_nodes):
+            for j in range(i, nb_nodes):
+                if i < neuron_nbr**2:
+                    v1 = self.nodes[i%neuron_nbr, i//neuron_nbr].weight
+                else:
+                    v1 = self.data[i-neuron_nbr**2]
+                if j < neuron_nbr**2:
+                    v2 = self.nodes[j%neuron_nbr, j//neuron_nbr].weight
+                else:
+                    v2 = self.data[j-neuron_nbr**2]
+                g.add_edge(i, j, weight=dist_quad(v1, v2))
+        gn = nx.from_numpy_matrix(self.neural_graph.get_binary_adjacency_matrix())
+        edges_list = nx.edges(gn)
+        print("Graph created")
+        return g, edges_list
 

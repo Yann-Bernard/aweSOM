@@ -22,6 +22,8 @@ from GUI.View.ReconstructedImage import ReconstructedImage
 from Models.NPSOM.Connections import kohonen, star
 from Models.SOM import SOM
 from Parameters import *
+import networkx as nx
+import matplotlib.pyplot as plt
 
 def run():
     img = ColoredImage()
@@ -49,9 +51,14 @@ def run():
     tile3.set_image(ImageQt(som_as_image))
     som_as_image.save(output_path + "koh_"+str(neuron_nbr) + "n_" + str(pictures_dim[0])+"x"+str(pictures_dim[1])+"_"+str(epoch_nbr)+"epoch_map.png")
     print("Finished")
+    # g, edges_list = som.getDistanceGraph()
+    # layout = nx.drawing.layout.kamada_kawai_layout(g)
+    # #nx.drawing.nx_pylab.draw(g, edgelist=(), node_size=10, alpha=0.6, node_color=node_type, cmap='bwr')
+    # nx.drawing.nx_pylab.draw(g, pos=layout, nodelist=range(neuron_nbr**2, nx.number_of_nodes(g)), edgelist=(), node_size=10, alpha=0.2, node_color='blue', cmap='bwr')
+    # nx.drawing.nx_pylab.draw(g, pos=layout, nodelist=range(neuron_nbr**2), edgelist=edges_list, edge_color='green', node_size=10, alpha=0.7, node_color='red', cmap='bwr')
+    # plt.show()
     input("press enter to start tracking")
     track(som)
-
 
 def track(som):
     max = 250
