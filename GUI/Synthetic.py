@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter.ttk import *
 from Data.Generated_2D import *
+from Models.Local_SOM import Local_SOM
 from Models.NPSOM.Connections import *
 from Models.DynamicPCSOM import *
 from Models.PCSOM import *
@@ -36,7 +37,7 @@ class GraphicalSOM:
         self.connexion = Canvas(self.window, width=connexions_size, height=connexions_size, bg="ivory")
         self.connexion.grid(row=6, column=10, columnspan=1, rowspan=1, padx=10, pady=10)
         np.random.seed(0)
-        self.SOM = DynamicSOM(sierpinski_carpet(dataset_size, 1), star())
+        self.SOM = Local_SOM(sierpinski_carpet(dataset_size, 1), kohonen())
         self.epoch_time = len(self.SOM.data)
         self.current_iteration = 0
         self.total_iterations = self.epoch_time * epoch_nbr
@@ -51,7 +52,7 @@ class GraphicalSOM:
         self.draw_data()
         self.draw_map()
         self.draw_metrics()
-        self.draw_connexions()
+#        self.draw_connexions()
 
         self.item = None
         self.canvas.bind("<Button-1>", self.deselect)
@@ -96,6 +97,14 @@ class GraphicalSOM:
                         y1 = k//neuron_nbr
                         self.canvas.create_line(positions[x, y][0], positions[x, y][1], positions[x1, y1][0], positions[x1, y1][1],
                                                 fill="blue", tags=("link", str(x)+";"+str(y)+";"+str(x1)+";"+str(y1)))
+
+    def draw_bmu_computing(self):
+        print(self.SOM.updates_list)
+        for i in self.SOM.updates_list:
+            position = project(self.SOM.nodes[i].weight[0], self.SOM.nodes[i].weight[1])
+            draw_data_point(self.canvas, position[0], position[1], "green", ("neuron", str(i[0]) + ";" + str(i[1])))
+        x, y = project(self.SOM.current_vector[0], self.SOM.current_vector[1])
+        draw_data_point(self.canvas, x, y, "black", "data")
 
     def draw_connexions(self):
         self.connexion.delete("all")
@@ -193,10 +202,11 @@ class GraphicalSOM:
         self.canvas.delete("all")
         self.draw_data()
         self.draw_map()
+        self.draw_bmu_computing()
         #self.draw_connexions()
-        self.canvas.update()
-        self.connexion.update()
-        self.update_metrics()
+        #self.canvas.update()
+        #self.connexion.update()
+        #self.update_metrics()
 
     def run_once(self):
         try:
@@ -233,3 +243,6 @@ class GraphicalSOM:
                 self.connexion.update()
                 start_time = time.time()
 
+
+if __name__ == '__main__':
+    GraphicalSOM()
